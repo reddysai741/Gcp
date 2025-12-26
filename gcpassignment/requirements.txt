@@ -1,0 +1,5 @@
+google-cloud-storage
+pandas
+pymysql
+mysql-connector-python
+python-dotenv

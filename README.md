@@ -12,6 +12,51 @@
 | **RDS (Cloud SQL)**              | Relational Database Concepts<br>Relational Databases in GCP<br>Setting Up Cloud SQL<br>MySQL / PostgreSQL Interfaces<br>DB Instances, Storage & Monitoring<br>Event Notifications<br>DB Access Control<br>MySQL Features<br>Creating Databases<br>Connecting to Database<br>Export & Import                                                                                                                                                                                             |
 | **Messaging in GCP**             | Messaging Concepts & Benefits<br>Messaging Options (Pub/Sub, Cloud Tasks, Eventarc)<br>Messaging Service Design<br>Pub/Sub Basics<br>Eventarc<br>Streaming with Pub/Sub & Dataflow<br>Real-Time Messaging<br>Publishers & Subscribers<br>Using Pub/Sub<br>Benefits & Features<br>Queue vs Pub/Sub<br>Message Attributes & Filtering<br>Raw Message Delivery<br>System-to-System Messaging                                                                                               |
 
+## Command line for gcp 
+
+
+gcloud auth login
+gcloud config set project mazenet-001
+gcloud config set compute/region asia-south1
+
+gcloud services enable pubsub.googleapis.com
+gcloud services enable cloudfunctions.googleapis.com
+gcloud services enable eventarc.googleapis.com
+gcloud services enable run.googleapis.com
+gcloud services enable bigquery.googleapis.com
+
+### Cloud Sql
+cloud-sql-proxy.x64.exe mazenet-001:asia-south1:sainathdb --port 3307
+mysql -h 127.0.0.1 -P 3307 -u sainathdemo -p
+USE Managment_system;
+
+### PubSub
+gcloud pubsub topics create sainath-events
+gcloud pubsub topics list
+gcloud pubsub subscriptions create sainath-events-sub --topic=sainath-events
+
+### BigQuery
+bq mk --dataset sainathevents
+bq mk --dataset --location=asia-south1 sainathevents
+bq ls
+bq mk --table sainathevents.user_events event:STRING,user:STRING,ts:TIMESTAMP
+bq ls sainathevents
+
+### Cloud function and deployment
+gcloud functions deploy sainath `
+  --gen2 `
+  --region=asia-south1 `
+  --runtime=python310 `
+  --source=. `
+  --entry-point=on_user_create `
+  --trigger-event-filters="type=google.cloud.firestore.document.v1.created" `
+  --trigger-event-filters="database=sainath" `
+  --trigger-event-filters-path-pattern="document=users/{docId}"
+
+  or 
+  
+
+gcloud functions deploy sainath --gen2 --region=asia-south1 --runtime=python310 --source=. --entry-point=on_user_create --trigger-event-filters="type=google.cloud.firestore.document.v1.created" --trigger-event-filters="database=sainath" --trigger-event-filters-path-pattern="document=users/{docId}"
 
 
 <img width="1337" height="449" alt="Screenshot 2025-12-23 111345" src="https://github.com/user-attachments/assets/283ce319-7a81-471a-bfa1-1032e133b2ed" />

@@ -16,33 +16,51 @@
 
 
 gcloud auth login
+
 gcloud config set project mazenet-001
+
 gcloud config set compute/region asia-south1
 
 gcloud services enable pubsub.googleapis.com
+
 gcloud services enable cloudfunctions.googleapis.com
+
 gcloud services enable eventarc.googleapis.com
+
 gcloud services enable run.googleapis.com
+
 gcloud services enable bigquery.googleapis.com
 
 ### Cloud Sql
+
 cloud-sql-proxy.x64.exe mazenet-001:asia-south1:sainathdb --port 3307
+
 mysql -h 127.0.0.1 -P 3307 -u sainathdemo -p
+
 USE Managment_system;
 
 ### PubSub
+
 gcloud pubsub topics create sainath-events
+
 gcloud pubsub topics list
+
 gcloud pubsub subscriptions create sainath-events-sub --topic=sainath-events
 
 ### BigQuery
+
 bq mk --dataset sainathevents
+
 bq mk --dataset --location=asia-south1 sainathevents
+
 bq ls
+
 bq mk --table sainathevents.user_events event:STRING,user:STRING,ts:TIMESTAMP
+
 bq ls sainathevents
 
 ### Cloud function and deployment
+
 gcloud functions deploy sainath `
   --gen2 `
   --region=asia-south1 `
